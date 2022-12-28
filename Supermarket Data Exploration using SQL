@@ -1,0 +1,106 @@
+-- SUPERMARKET SALES DATA EXPLORATION
+
+  --Skills Used:Window Functions,Aggregate Functions,Case Statements
+
+  select * from [supermarket_sales - Sheet1]
+
+  select branch,city,Customer_type,payment,Total from [supermarket_sales - Sheet1]
+  where branch='A'
+
+  select branch,city,Customer_type,Payment,Total from [supermarket_sales - Sheet1]
+  where branch ='B'
+
+  select branch,city,Customer_type,payment,total from [supermarket_sales - Sheet1]
+  where Branch='C'
+
+  ---TOTAL AMOUNT GOTTEN FROM CUSTOMER TYPE 
+  select Customer_type,sum(Total ) as TotalAmount from [supermarket_sales - Sheet1]
+  where Total>500
+  group by Customer_type
+  order by TotalAmount  desc
+---
+  ---TOTAL AMOUNT GOTTEN FROM CUSTOMER TYPE BY PAYMENT METHOD
+  select Customer_type,payment,sum(Total ) as TotalAmount from [supermarket_sales - Sheet1]
+  where Total>500
+  group by Customer_type,Payment
+  order by TotalAmount  desc
+
+  ---HOW MANY FEMALES WITH TAX GREATER THAN 10 GAVE US A RATING LESS THAN 5--
+  select gender,Customer_type,count(Tax_5) as TX10,rating from [supermarket_sales - Sheet1]
+  where Tax_5>=10 and Gender='female'
+  group by Gender,Customer_type,Rating
+  having Rating<=5
+  order by Customer_type
+
+----TOTAL GROSS INCOME FROM MALE CUSTOMERS IN BRRANCH A WHO BUY SPORTS AND TRAVEL PRODUCTS
+select Customer_type,SUM(gross_income)as TotalGross,Payment from [supermarket_sales - Sheet1]
+where branch='A' and Gender='Male' and Product_line='sports and travel'
+group by Payment,Customer_type
+
+ ---TOTAL COST AND TOTAL REVENUE FROM BRANCH A IN THE THREE MONTHS
+select  format (date,'MMM')as MOTY,branch,sum(cogs) as COST ,SUM(total)as TOTAL from [supermarket_sales - Sheet1]
+where branch ='A'
+group by format (date,'MMM'),Branch
+order by  format (date,'MMM'),Branch
+
+---TOTAL COST AND TOTAL REVENUE FROM BRANCH B IN THE THREE MONTHS
+select  format (date,'MMM')as MOTY,branch,sum(cogs) as COST ,SUM(total)as TOTAL from [supermarket_sales - Sheet1]
+where branch='B'
+group by format (date,'MMM'),Branch
+order by  format (date,'MMM'),Branch
+
+---TOTAL COST AND TOTAL REVENUE FROM BRANCH C IN THE THREE MONTHS
+select  format (date,'MMM')as MOTY,branch,sum(cogs) as COST ,SUM(total)as TOTAL from [supermarket_sales - Sheet1]
+where Branch='C'
+group by format (date,'MMM'),Branch
+order by  format (date,'MMM'),Branch
+
+ ---TOTAL COST AND TOTAL REVENUE FROM BRANCH A,B,C IN THE THREE MONTHS
+select  format (date,'MMM')as MOTY,branch,sum(cogs) as COST ,SUM(total)as TOTAL from [supermarket_sales - Sheet1]
+group by format (date,'MMM'),Branch
+order by  format (date,'MMM'),Branch
+
+---TOTAL NUMBER OF EACH CUSTOMER TYPE FOR EACH BRANCH
+select branch ,count(Customer_type) as NcustomerType,Customer_type  from [supermarket_sales - Sheet1]
+group by branch,Customer_type
+order by branch,NcustomerType
+
+---BRANCH,CITY,CUSTOMER_TYPE,GENDER AND TAX5%
+select a.branch,a.city,a.customer_type,a.gender,a.Tax_5 from [supermarket_sales - Sheet1] a
+left join [supermarket_sales - Sheet1] b
+on a.Invoice_ID=b.Invoice_ID
+order by Customer_type
+
+---CASE STATEMENT FOR CUSTOMER TYPE
+select *,
+case when Quantity>6 then'Top Customer'
+     when Quantity between 4 and 6 then 'Regular Customer'
+	 when Quantity <4 then 'Occasional Customer'
+	 end as Customer_Ranking
+ from [supermarket_sales - Sheet1]
+ order by Branch
+
+ ----TOTAL GROSS INCOME FROM FEMALE CUSTOMERS WHO BUY HEALTH AND BEAUTY PRODUCTS
+select Customer_type,count(Gender) as Gender,SUM(gross_income)as TotalGross,Payment from [supermarket_sales - Sheet1]
+where Product_line='Health and Beauty'
+group by Payment,Customer_type
+
+-----COUNT OF PRODUCTS IN ALL BRANCH
+select distinct product_line , count(Product_line) as ProductCount,Branch from [supermarket_sales - Sheet1]
+group by Branch,Product_line
+order by Branch
+
+----DISTINCT COUNT OF PRODUCT LINE IN EACH BRANCH "A"
+select distinct product_line , count(Product_line) as ProductCount,Branch from [supermarket_sales - Sheet1]
+where branch='A'
+group by Branch,Product_line
+
+---DISTINCT COUNT OF PRODUCT LINE IN EACH BRANCH "B"
+select distinct product_line , count(Product_line) as ProductCount,Branch from [supermarket_sales - Sheet1]
+where Branch='B'
+group by Branch,Product_line
+
+---DISTINCT COUNT OF PRODUCT LINE IN EACH BRANCH "C"
+select distinct product_line , count(Product_line) as ProductCount,Branch from [supermarket_sales - Sheet1]
+where Branch='C'
+group by Branch,Product_line
